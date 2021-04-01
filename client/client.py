@@ -43,4 +43,5 @@ while True:
     elif cmd == 'quit':
         cmd_exit()
     else:
-        handle_response(send_request(cmd))
+        client.sendall(cmd.encode())
+        print(client.recv(1024).decode())
