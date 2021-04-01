@@ -13,7 +13,9 @@ except Exception as e:
 
 
 def handle_request(connection):
-    send_response(connection, connection.recv(1024).decode())
+    cmd = connection.recv(1024).decode()
+    print(cmd)
+    send_response(connection,cmd )
 
 def send_response(connection ,res):
     connection.send(res.encode())

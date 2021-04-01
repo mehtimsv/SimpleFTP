@@ -19,11 +19,11 @@ def cmd_exit():
     exit()
 
 def send_request(cmd):
-    client.send(cmd.encode())
+    client.sendall(cmd.encode())
     return client.recv(1024)
 
 def handle_response(res):
-    print(res)
+    print(res.decode())
 
 
 print("Trying to connect...")
@@ -42,6 +42,7 @@ while True:
         cmd_help()
     elif cmd == 'quit':
         cmd_exit()
+    elif cmd.split(" ")[0] in ["list", "pwd", "cd", "dwld"]:
+        handle_response(send_request(cmd))
     else:
-        client.sendall(cmd.encode())
-        print(client.recv(1024).decode())
+        print("This command does not exist")
