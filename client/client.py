@@ -18,12 +18,34 @@ def cmd_exit():
     print("Good Bye!")
     exit()
 
+def downloading(port, file):
+    dChannel = socket(AF_INET, SOCK_STREAM)
+    try:
+        dChannel.connect((SERVER, int(port)))
+    except Exception as e:
+        print("Can't Connect! something's wrong with %s:%d. Exception is %s" % (SERVER, port, e))
+
+    print('Downloading...')
+    data = dChannel.recv(1048576)
+    with open(file, 'wb') as f:
+        f.write(data)
+        print('The file downloaded :)')
+    dChannel.close()
+    return True
+
 def send_request(cmd):
     client.sendall(cmd.encode())
     return client.recv(1024)
 
-def handle_response(res):
-    print(res.decode())
+def handle_response(cmd, res):
+    if cmd.startswith("dwld"):
+        port = res.decode()
+        if port == '404':
+            print("Error 404. The file doesn't exist")
+        else:
+            downloading(port, cmd[5:])
+    else:
+        print(res.decode())
 
 
 print("Trying to connect...")
@@ -43,6 +65,6 @@ while True:
     elif cmd == 'quit':
         cmd_exit()
     elif cmd.split(" ")[0] in ["list", "pwd", "cd", "dwld"]:
-        handle_response(send_request(cmd))
+        handle_response(cmd, send_request(cmd))
     else:
         print("This command does not exist")

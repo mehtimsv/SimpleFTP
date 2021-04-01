@@ -1,4 +1,4 @@
-import os
+import os,random
 from socket import *
 SERVER = '127.0.0.1'
 PORT = 2121
@@ -42,6 +42,37 @@ def handle_cd(dir):
         response = 'The directory does not exist!\n'
     return response
 
+def build_data_channel():
+    port = random.randint(3000, 50000)
+    dChannel = socket(AF_INET, SOCK_STREAM)
+    dChannel.bind((SERVER, port))
+    dChannel.listen()
+    return dChannel , str(port)
+
+def handle_dl(connection , file):
+    if file in os.listdir():
+        print('Sending...')
+        data_channel,data_port = build_data_channel()
+        send_response(connection , data_port)
+
+        data_channel_conn, addr = data_channel.accept()
+        if os.path.exists(file):
+            with open(file, 'rb') as file:
+                data = file.read()
+                data_channel_conn.send(data)
+            print('File sent successfully')
+            data_channel_conn.close()
+            data_channel.close()
+            print('\nClosing Data Channel ...')
+            response =  'File download successfully'
+        else:
+            data_channel_conn.close()
+            response = "The file doesn't exist"
+    else:
+        response = "404"
+    return response
+
+
 def handle_request(connection):
     cmd = connection.recv(1024).decode()
     response = cmd
@@ -52,6 +83,8 @@ def handle_request(connection):
         response = handle_pwd()
     elif cmd.startswith("cd"):
         response = handle_cd(cmd[3:])
+    elif cmd.startswith("dwld"):
+        response = handle_dl(connection,cmd[5:])
 
     send_response(connection,response )
 
