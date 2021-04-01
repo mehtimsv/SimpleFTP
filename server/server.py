@@ -2,9 +2,9 @@ import os
 from socket import *
 SERVER = '127.0.0.1'
 PORT = 2121
-DIR_HOME = 'root'
-os.chdir(DIR_HOME)
-DIR_NOW = os.getcwd()
+DIR_INIT ='root'
+os.chdir(DIR_INIT)
+DIR_HOME = os.getcwd()
 
 print("Trying to create server...")
 try:
@@ -26,12 +26,17 @@ def handle_list():
 
     return ls + '\nTotal Directory Size: {}b '.format(sumOfFileSize)
 
+def handle_pwd():
+    return  '/' if os.getcwd() == DIR_HOME else os.getcwd()[len(DIR_HOME):].replace("\\","/")
+
 def handle_request(connection):
     cmd = connection.recv(1024).decode()
     response = cmd
     print(cmd)
     if cmd == 'list':
         response = handle_list()
+    elif cmd == 'pwd':
+        response = handle_pwd()
 
     send_response(connection,response )
 
