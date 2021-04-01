@@ -29,6 +29,19 @@ def handle_list():
 def handle_pwd():
     return  '/' if os.getcwd() == DIR_HOME else os.getcwd()[len(DIR_HOME):].replace("\\","/")
 
+def handle_cd(dir):
+    if os.path.exists(dir):
+        lastDir = os.getcwd()
+        os.chdir(dir)
+        if os.getcwd().startswith(DIR_HOME):
+            response = 'Changed directory.'
+        else:
+            os.chdir(lastDir)
+            response =  "Access denied! couldn't change directory"
+    else:
+        response = 'The directory does not exist!\n'
+    return response
+
 def handle_request(connection):
     cmd = connection.recv(1024).decode()
     response = cmd
@@ -37,6 +50,8 @@ def handle_request(connection):
         response = handle_list()
     elif cmd == 'pwd':
         response = handle_pwd()
+    elif cmd.startswith("cd"):
+        response = handle_cd(cmd[3:])
 
     send_response(connection,response )
 
