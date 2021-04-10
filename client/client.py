@@ -16,6 +16,7 @@ quit            : Exit
 
 def cmd_exit():
     print("Good Bye!")
+    client.close()
     exit()
 
 def downloading(port, file):
@@ -44,6 +45,8 @@ def handle_response(cmd, res):
             print("Error 404. The file doesn't exist")
         else:
             downloading(port, cmd[5:])
+    elif cmd == "quit":
+        cmd_exit()
     else:
         print(res.decode())
 
@@ -59,12 +62,10 @@ except Exception as e:
     exit()
 
 while True:
-    cmd = input("$cmd: ")
+    cmd = input("$cmd: ").lower()
     if cmd == 'help':
         cmd_help()
-    elif cmd == 'quit':
-        cmd_exit()
-    elif cmd.split(" ")[0] in ["list", "pwd", "cd", "dwld"]:
+    elif cmd.split(" ")[0] in ["list", "pwd", "cd", "dwld", "quit"]:
         handle_response(cmd, send_request(cmd))
     else:
         print("This command does not exist")

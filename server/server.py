@@ -85,6 +85,11 @@ def handle_request(connection):
         response = handle_cd(cmd[3:])
     elif cmd.startswith("dwld"):
         response = handle_dl(connection,cmd[5:])
+    elif cmd == 'quit':
+        response = ''
+        send_response(connection, response)
+        connection.close()
+        exit()
 
     send_response(connection,response )
 
@@ -94,5 +99,3 @@ def send_response(connection ,res):
 conn, addr = server.accept()
 while True:
     handle_request(conn)
-
-conn.close()
