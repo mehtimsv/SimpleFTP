@@ -62,10 +62,10 @@ except Exception as e:
     exit()
 
 while True:
-    cmd = input("$cmd: ").lower()
-    if cmd == 'help':
+    cmd = input("$cmd: ")
+    if cmd.lower() == 'help':
         cmd_help()
-    elif cmd.split(" ")[0] in ["list", "pwd", "cd", "dwld", "quit"]:
+    elif cmd.split(" ")[0].lower() in ["list", "pwd", "cd", "dwld", "quit"]:
         handle_response(cmd, send_request(cmd))
     else:
         print("This command does not exist")

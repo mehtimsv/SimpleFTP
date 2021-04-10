@@ -85,6 +85,8 @@ def handle_request(connection):
         response = handle_cd(cmd[3:])
     elif cmd.startswith("dwld"):
         response = handle_dl(connection,cmd[5:])
+        if response == 'File download successfully':
+            return
     elif cmd == 'quit':
         response = ''
         send_response(connection, response)
