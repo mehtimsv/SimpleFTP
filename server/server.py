@@ -37,9 +37,10 @@ def handle_cd(dir):
             response = 'Changed directory.'
         else:
             os.chdir(lastDir)
-            response =  "Access denied! couldn't change directory"
+            response = "Access denied! couldn't change directory"
     else:
         response = 'The directory does not exist!\n'
+    print(response)
     return response
 
 def build_data_channel():
@@ -76,7 +77,7 @@ def handle_dl(connection , file):
 def handle_request(connection):
     cmd = connection.recv(1024).decode()
     response = cmd
-    print(cmd)
+    print("Received Command: " + cmd)
     if cmd == 'list':
         response = handle_list()
     elif cmd == 'pwd':
@@ -100,4 +101,9 @@ def send_response(connection ,res):
 
 conn, addr = server.accept()
 while True:
-    handle_request(conn)
+    try:
+        handle_request(conn)
+    except Exception as e:
+        print("Connection Lost!")
+        conn.close()
+        break
