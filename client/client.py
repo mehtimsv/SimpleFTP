@@ -1,4 +1,5 @@
 from socket import *
+import os
 SERVER = '127.0.0.1'
 PORT = 2121
 
@@ -28,7 +29,8 @@ def downloading(port, file):
 
     print('Downloading...')
     data = dChannel.recv(1048576)
-    with open(file, 'wb') as f:
+    p = os.path.split(os.path.abspath(__file__))[0]
+    with open(p + '\\' + file, 'wb') as f:
         f.write(data)
         print('The file downloaded :)')
     dChannel.close()

@@ -2,10 +2,10 @@ import os,random
 from socket import *
 SERVER = '127.0.0.1'
 PORT = 2121
-DIR_INIT ='root'
-os.chdir(DIR_INIT)
+DIR_INIT = 'root'
+CUR = os.path.split(os.path.abspath(__file__))[0]
+os.chdir(CUR + '\\'+DIR_INIT)
 DIR_HOME = os.getcwd()
-
 print("Trying to create server...")
 try:
     server = socket(AF_INET, SOCK_STREAM)
